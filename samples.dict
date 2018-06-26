@@ -1,0 +1,19 @@
+
+( Examples of plots )
+ 1 degrees !
+ (.") Plot cos(x)" plt-title !
+ (.") Degrees" x-label !
+ (.") Amplitude" y-label !
+ iota 3.6 fill v* enter cosx x<>y plotxy One Plot"
+
+0 degrees !
+." As a demo, set the plot title, x-label, and y-label and plot sin(x)"
+ (.") Plot sin(x)" plt-title !
+ (.") Radians" x-label !
+ (.") Sin(x*2*pi/100)" y-label !
+ iota 50 fill v/ pi fill v* enter sinx x<>y  plotxy Two"
+
+
+
+;S
+

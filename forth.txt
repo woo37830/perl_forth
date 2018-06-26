@@ -1,0 +1,38 @@
+			Forth
+			 in
+			Perl
+
+
+Just to make things interesting, a rudimentary FORTH has been implemented in Perl.  Most of the features of FORTH are present, but you might want to think of it as a way of learning more about FORTH by being able to look at the way the inner interpreter and thread execution segments work.  If you want to really experiment with it, be sure to get the forth.dict also.  This adds to the internal functions the features of IF, ELSE, THEN, DO, LOOP, etc.
+
+To run this version of forth, you must have perl installed and in your execution path.  Then select the entire source code below and copy it.  Then paste it into a new document and save it as the file name "forth".  I first built a directory called forth also to put this stuff in, but that's not absolutely necessary.  Be sure and do a:
+
+chmod a+x forth
+
+so that the forth code is executable and check that the path given on the first line of the forth code conforms to where you have your perl binary (perl5.001m in my case).  Get the forth.dict and copy it from the Web Browser and paste it into a new document and save it as forth.dict.  
+
+Run Forth by typing:
+
+forth
+
+Then to load the forth dictionary, type
+
+load forth.dict
+
+If things work normally, you'll see a message that the basic functions have been loaded.
+
+Try a few things like:
+
+: testloop DO I . LOOP ;
+
+10 1 testloop cr
+
+and you should get
+ 1 2 3 4 5 6 7 8 9 10
+
+The present version uses the associative storage of Perl to speed things up, so the behavior might not be exactly as a true "standard" FORTH.  A good reference for how FORTH works is:
+
+Threaded Interpretive Languages, R. G. Loeliger, Byte Books, 70 Main Street,
+	Peterborough, NH 03458
+
+woo@ornl.gov 

@@ -1,0 +1,37 @@
+
+( This is an example of a plot using commands entered )
+open_gnuplot
+(.") set multiplot  " gnuplot_command
+(.") set autoscale " gnuplot_command
+(.") set size 0.5,0.5 " gnuplot_command
+(.") set origin 0.0,0.5 " gnuplot_command
+(.") plot sin(x) " gnuplot_command
+(.") set origin 0.5,0.5" gnuplot_command
+(.") plot cos(x) " gnuplot_command
+(.") unset multiplot " gnuplot_command
+plotit
+
+1 degrees !
+
+iota 3.6 >x v* enter cosx x<>y writexy
+
+open_gnuplot
+(.") set multiplot  " gnuplot_command
+(.") set autoscale " gnuplot_command
+(.") set size 0.5,0.5 " gnuplot_command
+(.") set origin 0.0,0.5 " gnuplot_command
+( Here we have used writexy to put data from the x and y arrays into tmp_plt.txt )
+(.") plot '/Users/woo/tmp/tmp_plt.txt' using 1:2 title 'Cos(degrees)' with lines " gnuplot_command
+(.") set origin 0.5,0.5" gnuplot_command
+(.") plot cos(x) " gnuplot_command
+(.") unset multiplot " gnuplot_command
+plotit
+
+". Example of using gc followed by the command "
+open_gnuplot
+gc plot sin(x) title 'gc plot sin(x)' "
+plotit
+
+;S
+
+

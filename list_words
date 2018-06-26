@@ -1,0 +1,9 @@
+#!/usr/bin/perl
+#
+open(SOURCE,"./forth.dict")	|| die("forth source file not found\n");
+
+while(<SOURCE>)	{
+	chop;
+	next unless /^.*:.*#/;
+	print $_,"\n";
+}

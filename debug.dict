@@ -1,0 +1,7 @@
+
+: prt_fcn_name dup @ 2- ? ; 
+: prt_fcn word ?search IF dup ? cr 2+ BEGIN 1+ 4 spaces prt_fcn_name cr dup @ 43 - UNTIL   ELSE ." Not Found in current dictionary " ENDIF ; 
+: prt_words 0 DO dup cr I + .  dup I + ? LOOP drop ; 
+". Finished Loading vocabulary debug " 
+
+;S 

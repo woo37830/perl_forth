@@ -1,0 +1,47 @@
+
+: ( RT_PAREN token drop2 ; 
+: (.") QUOTE token drop ;
+: 1+  1  + ;
+: 2+ 2 + ;
+: 3+ 3 + ;
+: - minus + ;
+: 1- 1 - ;
+: 2- 2 - ;
+: BACK HERE - , ;
+: BEGIN ?comp HERE 1 ; immediate
+: ENDIF ?comp 2 ?pairs HERE over - swap ! ; immediate
+: THEN [compile] ENDIF ; immediate
+: DO compile (do) HERE 3 ; immediate
+: LOOP 3 ?pairs compile (loop) BACK ; immediate
+: +LOOP 3 ?pairs compile (+loop) BACK ; immediate
+: I R> R swap >R ;
+: UNTIL 1 ?pairs compile 0BRANCH BACK ; immediate
+: AGAIN 1 ?pairs compile BRANCH BACK ; immediate
+: END [compile] UNTIL ; immediate
+: REPEAT >R >R [compile] AGAIN R> R> 2- [compile] ENDIF ; immediate
+: IF compile 0= compile 0BRANCH HERE 0 , 2  ; immediate
+: ELSE 2 ?pairs compile BRANCH HERE 0 , swap 2 [compile] ENDIF 2 ; immediate
+: WHILE [compile] IF 2+ ; immediate
+: LEAVE R> drop R R> ;
+: complex <builds , , does> dup 1+ ;
+: ?CURRENT CURRENT @ 3 - @ type ASPACE type ;
+: ?CONTEXT CONTEXT @ 3 - @ type ASPACE type ;
+: DEFINITIONS CONTEXT @ CURRENT ! ;
+: word ASPACE token drop2 ;
+: DP+! DP @ + DP ! ;
+: ? @ . ;
+: ." (.") compile literal , compile type  ; immediate
+: < swap > ;
+: min over over < IF swap ENDIF drop ;
+: max over over > IF swap ENDIF drop ;
+: space ASPACE type ;
+: spaces 0 max -dup IF 1 DO space LOOP ENDIF ;
+: DUMP DP @ dup LAST @ - 1+ n_prt cr ." LAST =" LAST ? ." DP = " DP ? ." CURRENT = " CURRENT @ ? ." CONTEXT = " CONTEXT @ ? cr ;
+: str <builds , does> ;
+: REMEMBER 0 variable ;
+: bye quit ;
+: ". (.") type cr ;
+
+". Finished Loading Basic Functions"
+
+;S

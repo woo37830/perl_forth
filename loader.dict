@@ -1,0 +1,13 @@
+
+load forth.dict 
+REMEMBER core
+load math.dict
+REMEMBER math
+load graphics.dict
+REMEMBER disspla
+load oddball.dict 
+REMEMBER oddball
+load todo.dict
+
+". Finished Loading all files"
+;S

@@ -1,0 +1,16 @@
+( Words to show the status of forth )
+cr
+". NOTE THAT THERE ARE SAMPLES in samples.dict and plot_commands in plot_commands.dict
+cr cr
+". TODO" cr
+". 0) Create a word that requires a dict to be loaded and loads it if not loaded.  recursive"
+". 1) Finish implementation of release."
+". 3) Fix concat, indexOf, and dy/dx, also -1 +LOOP "
+". 4) Test that a blk of -1 is handled nicely"
+". 5) Note that ;S must be followed by a blank line and the Finished Loading Basic Functions comes out a second time."
+". 6) Figure out how to print out the value stack. 'Duhh, values does this!'"
+". 7) Figure out how to put a pause in the dict file to wait to do the next plot"
+cr cr
+". Finished with todo.dict"
+cr cr
+;S

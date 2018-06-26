@@ -1,0 +1,17 @@
+( test graphics plotting package )
+
+(.") '/Users/woo/tmp/tmp_plt.txt' using 1:2 with lines" plt_str !
+
+(.") /Users/woo/tmp/tmp_plt.txt" str out_file
+
+: data_out 1 obtain out_file @ setfile 200 0 DO I write delim @ write I I * write eol write LOOP flush ;
+
+data_out
+
+(.") Data plot" plt-title !
+plot
+". Finished with test-plt.dict"
+". Now create plotxy for oddball where y is plotted versus x"
+
+
+;S

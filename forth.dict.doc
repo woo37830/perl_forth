@@ -1,0 +1,135 @@
+Forth Dictionary Documentation
+
+In the file forth.dict are many words.  In addition the CORE contains many additional.  Here is a summary of the internal words:
+
+hello:                  # print hello message at startup
+quit:                   # quit forth program
+abort:                  # abort execution, empty stack, restart
+drop2:                  # m n drop2 -> null     
+drop:                   # n drop -> null
+_push:                  # push -> push value last onto stack
+_dup:                   # n -dup -> n n if n != 0, else 0
+dot:                    # n . -> print top entry on stack -> null
+bits:                   # bits n  -> print bits of n -> null
+nl:                     # -> print nl symbol
+add:                    # m n + -> m+n
+mult:                   # m n * -> m*n
+div:                    # m n / -> m/n
+mod_div:		# m n % -> m mod n
+_values:                # values -> list parameter stack leave untouched
+tracing:                # m tracing -> null, 0 ends, 1 starts
+names:                  # names -> null, prints names in $dict
+prt_dict:               # prt_dict -> null, prints entire dict (raw)
+n_prt:          # m c n_prt -> null, starting at m print c stack items
+trace_fcn:      # ' word trace_fcn -> null, trace of word
+trace_dict:             # CURRENT @ @ trace_dict -> null, trace words in CURRENT
+_deposit:               # value , -> dep value in dict.
+literal:                # literal -> value following in dict when executing
+const:                  # const -> run time behavior of constant
+var:                    # var -> run time behavior of variable
+arr:                    # arr -> run time behavior of array
+immediate:              # mark last defined word as immediate
+constant:               # val constant name -> name puts val on stack
+variable:               # val variable name -> name puts addr on stack
+at:                     # var-name @    -> puts val of name on stack 
+store:                  # val var-name ! -> store val in var-name
+plus_store:             # val var-name +! -> adds val to that stored
+array:                  # length array-name -> makes array-name fills with 0
+_colon:                 # : new-word  -> starts defining new word
+create:                 # create header for word
+_semi:                  # ; -> immediate - terminate definition of word
+dep_semi:               # deposit ; into dictionary
+_find:          # -find following name in context dict
+_tick:                  # ' word, immed causes word to be found and wa put on
+goit:   $values[$#values] += 2;
+search:         # na search -> find word last input starting at na
+here:                   # HERE -> returns pres addr of end of dictionary
+dp_store:               # val addr DP! -> null, val stored at addr
+allot:                  # val allot -> null, moves dict ptr by top of stack
+minus:                  # val - -> -val
+pushR:                  # n >R -> null, push tos to ret stack
+Rpop:                   # R> -> ret_addr, pop ret_addr to tos
+R:                      # R -> ret_addr, copy ret_addr on tos
+rot:                    # 3 2 1 rot -> 1 3 2
+over:                   # 3 2 1 over -> 3 2 1 2
+swap:                   # 3 2 1 swap -> 3 1 2
+lbracket:               # immed word, goes into exec mode until ]
+rbracket:               # immed word, if was executing inside compile
+_comp:                  # error if not compiling
+_pairs:                 # error if control structs not balanced
+_error:                 # flag errno ?error -> produces error num if true(1)
+zequal:                 # m 0= -> (true/false), true=(!0)
+equal:                  # m n = -> (true/false)
+_gt:                    # v1 v2 > -> t/f if v2 > v1
+zbranch:                # m ZBRANCH -> null, if m=0,jump to foll. rel loc
+branch:                 # BRANCH -> null, jump to following rel loc in dict
+semicode:       # ;code immed puts addr of scode in dict, sets MODE to false;
+builds:                 # : xx <builds yyy does> zzzz ;
+_does:                  # run_time behavior of does>
+does:                   # does> -> immed compiles _does into code
+_do:                    # m n DO -> (do) -> run time for DO
+_loop:                  # LOOP -> (loop) -> run time for LOOP   
+_ploop:                 # m +LOOP -> (+loop) -> run time for +LOOP
+semi_s:                 # terminate load
+load:                   # load file_name start_word -> loads until ;S
+type:                   # tos type -> types tos string
+question:               # question -> outputs last word with ?          
+compile:                # store addr of following word in dict
+_compile:               # force compile of immed word immediately
+qsearch:                # word ?search -> false or wa true
+_token:         # delim token word -> "word" bytes 
+outer:          # outer interpreter
+
+The words that are compiled from the file forth.dict are
+
+(	# This takes everything to the matching ) on the line
+	# and makes it a comment
+(.")	# This takes everything to the next " on the line
+	# and puts it and its length on the stack
+1+	# Adds 1 to top of stack
+2+	# Duh
+3+	# ...
+-	# subtracts top of stack from next above it, leave difference on stack
+1-	# subtracts 1 from top of stack
+2-	# Guess
+BACK	# part of the codes to build jumps for IF, etc.
+BEGIN	# only when defining a word
+ENDIF	# ends an IF in a word definition
+THEN	# used in flag IF true stuff ELSE false stuff THEN
+DO	# expects upper lower on the stack  u l DO ... LOOP
+LOOP	# used in pairs with DO in word definitions
++LOOP	# expects an increment on stack  u l DO .... incr +LOOP
+I	# used in DO  I . LOOP to get current value of index
+UNTIL	# tests for a 0 and leaves a BEGIN UNTIL structure
+AGAIN	# used in BEGIN structures
+END	# same as an UNTIL i.e. exits on a zero on the stack
+REPEAT	# used with a WHILE .... REPEAT
+IF	# used as flag IF true stuff ENDIF or flag IF true ELSE false THEN
+ELSE	# the ELSE clause
+WHILE	# see REPEAT
+LEAVE	# leaves a DO ..flag IF LEAVE THEN  LOOP
+complex # demonstrates the use of : new_word <builds ... does> ;
+	# Now try 2 3 complex Z, then Z values to see what's there
+vocabulary	# a word to define new vocabularies.  Example to build a
+		# math vocabulary type vocabulary MATH
+		# to change to the MATH vocabulary type MATH
+?CURRENT # types out what the CURRENT vocabulary being compiled into is.
+?CONTEXT # types out what the CONTEXT vocabulary where definitions searched.
+word	# puts the next blank delimited word into the $word internal variable
+	# where ?search, search and others use it.
+FORGET	# chops the dictionary back to just before the word you're forgetting.
+	# for example if you've defined : FENCE ; somewhere and lots after it
+	# then FORGET FENCE throws away everything starting with FENCE and 
+	# following.
+?	# does an @ .   it prints out the value of variables
+	#   3.14 variable X then X ? prints 3.14
+."	# When compiling, allows literals to be stored in the definition for 		
+	# typing when executed.
+< 	# defines less than
+min	# m n min -> minimum of m and n on stack
+max	# leaves maximum of two top items
+space	# types out one space
+spaces	# n spaces types out n spaces
+".	# allows things on files that are loading to be typed out
+	# e.g. ". This will print when loading "
+

@@ -1,0 +1,15 @@
+START
+( Math Functions )
+: fac dup 1 > IF ." N < 1 invalid " abort ELSE 1 swap 2 DO I * LOOP ENDIF ;
+
+pi 180.0 / constant >radians_factor
+1.0 >radians_factor  / constant >degree_factor
+
+1 variable degrees ( means calcs in degrees, 1 means in radians )
+
+ (.") sin($values[$#values-1]) " str sin_str : sin sin_str @ perl ;
+ (.") cos($values[$#values-1]) " str cos_str : cos cos_str @ perl ;
+
+
+". Finished loading math functions"
+;S

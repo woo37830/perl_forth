@@ -1,0 +1,545 @@
+#!/bin/perl
+
+$DICT="~/.forthdict";
+#&prt_list(('a' .. 'z'));
+#&prt_list(('A' .. 'Z'));
+#&prt_list((0 .. 9));
+#&prt_list(('$' .. ' '));
+&def_var("CURRENT",0);
+	$stack[0] ="0CURRENT";
+	$dict{"0CURRENT"} = 0;
+&def_var("CONTEXT",0);
+#print $stack[$vars{"CURRENT"}], $stack[$vars{"CONTEXT"}],"\n";
+#printf("current = %s, context = %s\n",unpack('b*',$stack[$vars{"CURRENT"}]), #unpack('b*',$stack[$vars{"CONTEXT"}]));
+	&def("colon","&colon");
+	&def("semi","semi");
+	&def("execute","execute");
+	&def("quit","quit");
+$addr_execute = $dict{&vocab("execute")} + 2;
+$addr_semi = $dict{&vocab("semi")} + 2;
+#print "addr_semi = $addr_semi\n";
+&def("drop","drop");
+&def("drop2","drop2");
+&def("push","_push");
+&build("dup","drop","push","push");
+&def("+","add");
+&def("values","_values");
+&def(".","dot");
+&def("bits","bits");
+&def("hello","hello");
+&def("names","names");
+&def("prt_dict","prt_dict");
+&def("trace_dict","trace_dict");
+&def("exec","_exec");
+&def("outer","outer");
+&def("abort","abort");
+$addr_exec = $dict{&vocab("exec")} + 2;
+&def("literal","literal");
+$addr_lit = $dict{&vocab("literal")} + 2;
+print " literal at $addr_lit\n";
+&def("constant","constant");
+&def("variable","variable");
+&def("@","at");
+&def("!","store");
+&def("+!","plus_store");
+&def("array","array");
+&def_var("MODE",0);
+&def_var("STATE",0);
+&def_var("START",1);
+&def_var("BASE",10);
+&def_var("LOADING",0);
+&def_var("DP",0);
+&def(":","_colon");
+&def(";","_semi");
+&immed;
+&def("create","create");
+&def("HERE","here");
+&def("allot","allot");
+&def("minus","minus");
+&build("-","minus","+");
+&def(",","_deposit");
+&def(">R","pushR");
+&def("R>","Rpop");
+&def("R","R");
+&def("over","over");
+&def("rot","rot");
+&def("swap","swap");
+&def("-find","_find");
+&def("?comp","_comp");
+&def("?pairs","_pairs");
+&def("?error","_error");
+&def("0=","zequal");
+&def("=","equal");
+&def("DP!","dp_store");
+&def(">","_gt");
+&def("0BRANCH","zbranch");
+&def("BRANCH","branch");
+&def("word","_word");
+&def("load","load");
+&def(";S","semi_s");
+&def("compile","compile");
+&immed;
+&build("test","hello","values","dup","values","+",".","values","outer","quit");
+&build("start","test","outer");
+$stack[$vars{"DP"}] = $#stack;
+&_start;
+
+push(@values,3);
+push(@values,5);
+$last = 5;
+
+$wa = $dict{&vocab("start")} + 2;
+push(@ret_addr,$wa);
+$ip = $dict{&vocab("execute")} + 2;
+goto run;
+
+#	$ip	Instruction Register.
+#	$wa	Word Addr Register
+#	$ca	Code Addr Register
+#
+#	@ret_addr	Return Stack
+#
+#	@values		Stack for Values
+#
+
+hello:			# print hello message at startup
+	print "FORTH in PERL!\n";
+	print "\tVersion 1.0, 03/03/94\n";
+	print "\twoo@ornl.gov\n";
+	print "\n";
+	goto _next;
+	
+quit:			# quit forth program
+	print " bye\n";
+	exit;
+
+stkempty:
+	print "Stack Underflow, aborting\n";
+abort:			# abort execution, empty stack, restart
+	@ret_addr=();
+	@values=();
+	$#stack=$dp_hold;
+	$wa = $dict{&vocab("outer")} + 2;
+	push(@ret_addr,$wa);
+	$ip = $dict{&vocab("execute")} + 2;
+	goto run;
+
+sub colon	{
+	push(@ret_addr,$ip);	# push instr ptr onto return addr stack
+	$ip = $wa; #print "colon: wa = $wa, ip = $ip\n";
+	goto _next;
+}
+	
+semi:
+	&_exec if ($#ret_addr==0);
+	$ip = pop(@ret_addr);	#print "semi: wa = $wa, ip = $ip, ca = $ca\n";
+_next:
+	$wa = $stack[$ip++];	#print "_next: wa = $wa, ip = $ip\n";
+run:
+	$ca = $stack[$wa++];	#print "run: wa = $wa,ip=$ip,word=$stack[$wa-3]\n";
+	eval($ca);
+
+execute:
+	$wa = pop(@values);		#print "exec: \n";
+	goto run;
+
+sub pop	{
+	goto stkempty unless defined($last = pop(@values));
+	return;
+}
+
+
+drop2:	&pop;
+drop:			# pop -> pop word from stack
+	&pop;
+	goto _next;
+
+_push:			# push -> push value last onto stack
+	push(@values,$last);
+	goto _next;
+
+dot:			# . -> print top entry on stack
+	print $values[$#values]," ";
+	goto drop;
+
+bits:			# following symbol  -> print bits
+	$a = shift(@words);
+	print unpack('*B',$a)," ";
+	goto _next;
+
+nl:			# -> print nl symbol
+	print "\n";
+	goto _next;
+	
+add:			# replace top 2 stack items with 1 sum
+	$values[$#values-1] += $values[$#values];
+	goto drop;
+
+_values:		# values -> list values on stack
+	print "\nValue Stack\n";
+	for ($i=$#values;$i>=0;$i--)	{
+		print $i,") ",$values[$i],"\n";
+	}
+	goto _next;
+	
+sub vocab	{
+		$fnd = $stack[$vars{'CURRENT'}] . @_[0];
+}
+
+find:			# not sure this works!
+	local($name) = @_[0];
+	$last = $dict{&vocab($name)}+2;
+	push(@values,$last);
+	goto _next;
+
+names:
+	print "\nName Stack\n";
+	foreach $val (sort keys(%dict))	{
+		print $val,"-->",$dict{$val},"\n";
+	}
+	goto _next;
+
+prt_dict:
+	print "\nDict Stack\n";
+	for($i=$#stack;$i>=0;$i--)	{
+	# split off vocab byte and then print name with flag to right if immed and which vocab
+		print $i,") ",$stack[$i],"\n";
+	}
+	goto _next;
+
+trace_dict:
+	print "\nList Definitions\n";
+	$ptr = $latest;
+	while($ptr > 0)	{
+		print $stack[$ptr],"\n";
+		$ptr = $stack[$ptr+1];
+	} 
+	print $stack[0],"\n";
+	goto _next;
+
+
+sub def		{		# define word that is internal sub or label
+	push(@stack,&vocab(@_[0]));
+	$latest = $dict{&vocab(@_[0])} = $#stack;
+	push(@stack,$prev_def);
+	$prev_def = $latest;
+	if (@_[1] =~ /^&/)	{
+		$addr = "@_[1]";
+	} else	{
+		$addr = "goto @_[1]";
+	}
+#	printf "def @_[0] -> $addr at $latest\n";
+	push(@stack,$addr);
+#	$stack[$vars{"DP"}] = $#stack;
+}
+
+sub def_var	{		# def variable with val
+	push(@stack,&vocab(@_[0]));
+	$dict{&vocab(@_[0])} = $#stack;
+	$latest = $#stack;
+	push(@stack,$prev_def);
+	$prev_def = $latest;
+	$addr = "goto var";
+	push(@stack,$addr);
+	push(@stack,@_[1]);		# store initial value
+	@vars{@_[0]} = $#stack;
+#	$stack[$vars{"DP"}] = $#stack;
+}
+
+
+sub _start	{
+	$stack[$addr_execute] = $addr_exec;
+	return;
+}
+
+sub build	{
+	&def(@_[0],"&colon");
+		shift(@_);
+	while(@_)	{
+		$name = @_[0];
+		push(@stack,$dict{&vocab($name)} + 2);
+		shift(@_);
+		}
+	push(@stack,$addr_semi);
+#	$stack[$vars{"DP"}] = $#stack;
+}
+
+sub deposit	{
+	push(@stack,$values[$#values]);
+	$stack[$vars{"DP"}] += 1;
+}
+
+_deposit:		# value , -> dep value in dict.
+	&deposit;
+	goto drop;
+
+literal:
+	push(@values,$stack[$ip++]);
+	goto _next;
+
+const:
+	push(@values,$stack[$wa]);
+	goto _next;	
+
+var:
+	push(@values,$wa);
+	goto _next;
+
+sub immed	{
+	&toggle($latest,0);
+}
+
+compile:			# compile call to function following into stack
+	$word = shift(@words);
+	if ($word =~ /^&/)	{
+		$addr = "$word";
+	} else	{
+		$addr = "goto $word";
+	}
+	push(@values,$addr);
+	goto _deposit;
+
+immediate:		# mark last defined word as immediate
+	&toggle($latest,8);
+	goto _next;
+
+constant:		# val constant name -> name puts val on stack
+	&def(shift(@words),"const");
+	&deposit;
+	goto drop;
+	
+variable:		# val variable name -> name puts addr on stack
+	&def(shift(@words),"var");
+	&deposit;
+	goto drop;
+
+at:			# var-name @	-> puts val of name on stack 
+	$values[$#values] = $stack[$values[$#values]];
+	goto _next;
+
+store:			# val var-name ! -> store val in var-name
+	$stack[$values[$#values]] = $values[$#values-1];
+	goto drop2;
+	
+plus_store:		# val var-name +! -> adds val to that stored
+	$stack[$values[$#values]] += $values[$#values-1];
+	goto drop2;
+	
+array:			# val length array-name -> makes array-name
+	&def(shift(@words),"var");
+	$len = $values[$#values];
+	&deposit;	# store length as first item
+	&pop;
+	while($len > 0)	{
+		&deposit;
+		$len--;
+		}
+	&pop;
+	$stack[$vars{"DP"}] = $#stack;
+	goto _next;
+	
+_colon:			# : new-word  -> starts defining new word
+	$stack[$vars{'CONTEXT'}] = $stack[$vars{'CURRENT'}];
+	$stack[$vars{'MODE'}] = 1;	# set to compile mode = true
+	$dp_hold = $#stack;
+create:			# create header for word
+	&def(shift(@words),"&colon");
+#	&toggle($dp_hold,1);
+	goto _next;
+	
+_semi:			# ; -> immediate - terminate definition of word
+	push(@stack,$addr_semi);
+	$stack[$vars{'MODE'}] = 0;	# set to compile mode = false
+	$stack[$vars{'STATE'}] = 0;	# set STATE = false
+#	&toggle($dp_hold,1);
+	$stack[$vars{"DP"}] = $#stack;
+	goto _next;
+
+sub	toggle	{
+#	printf(" Toggling %s with bits %s\n",
+#		$stack[@_[0]],unpack('B*',$stack[@_[0]]));
+	vec($stack[@_[0]],@_[1],1) = vec($stack[@_[0]],@_[1],1) ? 0 : 1;
+#	printf(" Toggled %s with bits %s\n",
+#		$stack[@_[0]],unpack('B*',$stack[@_[0]]));
+}
+
+_find:			# -find following name in dict put addr of name on stack & true
+	$word = shift(@words);
+	$name = &vocab($word);
+	$wa = $latest;
+	while($wa != '')	{
+	if ($stack[$wa] eq $name) {
+		push(@values,$wa);
+		push(@values,1);
+		goto _next;
+		}
+	$wa = $stack[$wa+1];
+	}
+	push(@values,0);
+	goto _next;
+
+here:			# HERE -> returns pres addr of end of dictionary
+	push(@values,$stack[$vars{"DP"}]);
+	goto _next;
+
+dp_store:		# val dict-addr DP! -> val stored at dict addr
+	$stack[$values[$#values]] = $values[$#values-1];
+	goto drop2;
+
+allot:			# val allot -> moves dict ptr by top of stack
+	$#stack += $values[$#values];
+	$stack[$vars{"DP"}] = $#stack;
+	goto drop;
+
+minus:			# val - -> -val
+	$values[$#values] = - $values[$#values];
+	goto _next;
+
+pushR:			# push tos to ret stack
+	push(@ret_addr,$values[$#values]);
+	goto drop;
+
+Rpop:			# pop ret_addr to tos
+	push(@values,pop(@ret_addr));
+	goto _next;
+
+R:			# put ret_addr on tos
+	push(@values,$ret_addr[$#ret_addr]);
+	goto _next;
+
+rot:			# rotate stack 3 2 1 -> 1 3 2
+	$last = $values[$#values];
+	$values[$#values] = $values[$#values-2];
+	$values[$#values-2] = $values[$#values-1];
+	$values[$#values-1] = $last;
+	goto _next;
+
+over:			# 3 2 1 over -> 3 2 1 2
+	push(@values,$values[$#values-1]);
+	goto _next;
+
+swap:			# 3 2 1 swap -> 3 1 2
+	$last = $values[$#values-1];
+	$values[$#values-1] = $values[$#values];
+	$values[$#values] = $last;
+	goto _next;
+
+_comp:			# error if not compiling
+	goto _next;
+
+_pairs:			# error if control structs not balanced
+	goto _next;
+
+_error:			# flag errno error -> produces error num if true
+	goto _next;
+
+zequal:			# puts true (!0) on tos if 0 there
+	$values[$#values] = ($values[$#values]==0) ? 1 : 0 ;
+	goto _next;
+
+equal:			# puts true on tos if top two equal
+	$last = $values[$#values];
+	$values[$#values-1] = ($values[$#values]==$values[$#values-1]) ? 1 : 0 ;
+	goto drop;
+
+_gt:			# v1 v2 > -> t/f if v2 > v1
+	$values[$#values-1] = ($values[$#values] > $values[$#values-1]) ? 1 : 0;
+	goto drop;
+
+zbranch:		# jump to following loc in dict if 0 on tos
+	goto drop unless (!$values[$#values]);
+	print "zbranch: ip = $IP, wa = $wa\n";
+	goto drop;
+
+branch:			# jump to following loc in dict
+	print "branch: ip = $IP, wa = $wa\n";
+	goto _next;
+
+semi_s:			# terminate load
+	@words=();
+	$stack[$vars{'LOADING'}] = 0;
+	close(INPUT);
+	goto _next;
+	
+load:			# load file_name start_word -> loads until ;S
+	$file = shift(@words);
+	$delim = shift(@words);
+	if ( ! -e $file)	{
+		print "$file not found for loading\n";
+		goto abort;
+	}
+	$stack[$vars{'LOADING'}] = 1;
+	open(INPUT,$file);
+		$delim_fnd = 0;
+	while(<INPUT>)	{
+		if ($_ =~ "$delim")	{
+			$delim_fnd=1;
+			last;
+		}
+	}
+	if (!$delim_fnd)	{
+		print "$delim not found in $file\n";
+		goto semi_s;
+	}
+
+_word:
+				goto _next;
+				
+outer:
+		print "Outer Interpreter Starting\n" if (!$first);
+		$first = 1;
+		if(!$stack[$vars{'LOADING'}])	{
+			print "> ";
+			$line = <STDIN>;
+			}	else	{
+				$line = <INPUT>;
+			}
+		chop($line);
+		local(@words) = split('\s',$line);
+_exec:	
+		while(@words)	{
+			$word = shift(@words);
+			$name = $word;
+			$stack[$vars{'STATE'}] = 0;	# set STATE = false
+			if ($dict{&vocab($name)} eq '')	{
+				if ($word =~ /^\d+\.?\d*|\.\d+$/)	{
+					if (!$stack[$vars{'MODE'}])	{
+						push(@values,$word);
+						goto _exec;
+					}	else	{
+							push(@stack,$addr_lit);
+							push(@stack,$word);
+							goto _exec;
+						}
+				}
+				print "$word not found\n";
+				@values = ();
+				@words = ();
+				$stack[$vars{'MODE'}] = 0;
+				last;
+			}
+			$wa = $dict{&vocab($name)} + 2;
+			$immed = vec($stack[$wa-2],8,1);
+		print "word $stack[$wa-2] with nfa = $wa has immed flag = $immed\n";
+			if ($immed || !$stack[$vars{'MODE'}])	{
+				push(@ret_addr,$wa);
+				$ip = $dict{&vocab("execute")} + 2;
+				goto run;
+			}	else	 {
+					print "$name has code at $wa\n";
+					push(@stack,$wa);	
+				}
+		}
+
+		goto outer;
+		
+		
+sub prt_list	{
+	print join(',',@_),"\n";
+	while (@_)	{
+		local($a) = shift(@_);
+		print $a,"=",unpack('b*',$a),", ";
+	}
+	print "\n";
+}
+

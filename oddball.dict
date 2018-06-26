@@ -1,0 +1,83 @@
+
+load forth.dict
+REMEMBER core
+load math.dict
+REMEMBER math
+load graphics.dict
+REMEMBER disspla
+
+: clr-float DO 0.0 I ! LOOP ;
+: array <builds HERE swap allot HERE swap clr-float does> ;
+: variable <builds , does> ;
+100 variable dima
+5 variable dimt
+0 variable org
+dima @ variable dimo
+
+: adim dima @ ;
+: tdim dimt @ ;
+: O org @ ;
+
+adim 5 * array work
+
+work adim 4 * + dup variable x adim - dup variable y
+adim - dup variable z
+adim - dup variable t
+adim - variable lastx
+
+: move 0 DO over over I + @ swap I + ! LOOP drop drop ;
+: t@ t @ ; : z@ z @ ; : y@ y @ ; : x@ x @ ; : lx@ lastx @ ;
+: register-addrs cr ." t: " t@ . cr ." z: " z@ . cr ." y: " y@ . cr ." x: " x@ . cr cr ." lx: " lx@ . cr ;
+: s0 t@ z@ t ! y@ z ! x@ y ! x ! ;
+: s1 lx@ x@ lastx ! x ! ;
+: s2 lx@ x@ lastx ! y@ x ! z@ y ! t@ z ! t ! z@ t@ adim 1-  move ;
+: x<>y y@ x@ y ! x ! ;
+: roll x@ y@ x ! z@ y ! t@ z ! t ! ;
+: enter y@ x@ adim 1- move ;
+: clx roll adim 1- 0 DO 0.0 x@ I  + ! LOOP ;
+: vtype tdim 1- 0 DO x@ I + ? LOOP ;
+: iota s0 adim 1- 0 DO I  x@ I  +  ! LOOP ;
+: lx s0 lx@ x@ adim 1- move ;
+: disp cr 4 1 DO I . vtype cr roll LOOP ;
+: cls 4 0 DO clx LOOP ;
+
+: sdim dimo @ min ; : rdim dimo @ dima ! ;
+: v+ s2 adim 1- O DO x@ I + dup @ lx@ I + @ + swap ! LOOP ;
+: v- s2 adim 1- O DO x@ I + dup @ lx@ I + @ - swap ! LOOP ;
+: v* s2 adim 1- O DO x@ I + dup @ lx@ I + @ * swap ! LOOP ;
+: v/ s2 adim 1- O DO x@ I + dup @ lx@ I + @ / swap ! LOOP ;
+: v<< s1 adim 1- 0 DO dup x@ I + + @ x@ I + ! LOOP drop ; ( m v<< -> x[ i ] <= x[i+m]
+: v>> s1 0 adim 1- DO dup x@ I + + @ x@ I + ! -1 +LOOP drop ;
+: v> s1 adim 1- 0 DO dup lx@ I + @  > x@ I + ! LOOP ; ( m v> -> 1 if x[ i ] > m, else 0 )
+: v< s1 adim 1- 0 DO dup lx@ I + @  < x@ I + ! LOOP ;
+: v= s1 adim 1- 0 DO dup lx@ I + @  = x@ I + ! LOOP ;
+: x-crossing 0 v> enter 1 v<< v- ;
+: dy/dx s1 adim 1- 1 DO lx@ I + @ lx@ I + 1- @ - x@ I + 1- ! LOOP x@ adim 1- + 1- @ x@ adim  1- + ! ;  ( diff right now, needs divided by delta-x )
+
+: sinx adim 1- O DO x@ I + dup @ degrees @ 0= IF sin ELSE >radians_factor * sin ENDIF swap ! LOOP ;
+: cosx adim 1- O DO x@ I + dup @ degrees @ 0= IF cos ELSE >radians_factor * cos ENDIF swap ! LOOP ;
+: stuf adim 1- O DO dup x@ I + ! LOOP drop ; : fill s0 stuf ;
+: <I + O + @ ; : I> + O + ! ;
+: vmax s1 lx@ O <I adim 1- O 1+ DO lx@ I + @ max LOOP stuf ;
+: vmin s1 lx@ O <I adim 1- O 1+ DO lx@ I + @ min LOOP stuf ;
+
+: xul x@ @ dup adim O 1+ DO x@ I + @ min LOOP swap adim O 1+ DO x@ I + @ max LOOP ;
+: yul x<>y xul x<>y ;
+: 'scale' over over swap - 5. / ;
+
+( ". plt_str = " plt_str ? cr )
+( ". out_file = " out_file ? cr )
+( ". data_file = " data_file ? )
+
+: writexy 1 obtain out_file @ setfile adim 1- O DO x@ I + @ write delim @ write y@ I + @ write eol write LOOP flush ;
+
+( plotxy aWord" -> puts the postscript output into aWord.ps and then presents it )
+: plotxy QUOTE token drop data_file ! writexy plot ;
+
+: gc QUOTE token drop gnuplot_command ;
+
+". Finished Loading ODDBALL"
+REMEMBER oddball
+load todo.dict
+
+;S

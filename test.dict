@@ -1,0 +1,7 @@
+
+( uses prt_fcn from debug.dict )
+
+: a_fcn_name dup @ 2- ? ; ( ' xyz 1+ prt_fcn_name prints fcn name of first sub-fcn )
+: a_fcn word ?search IF dup ? cr 2+ BEGIN 1+ 4 spaces prt_fcn_name cr dup @ 43 - UNTIL   ELSE ." Not Found in current dictionary " ENDIF ;
+". Finished Loading vocabulary test "
+;S

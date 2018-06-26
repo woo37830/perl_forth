@@ -1,0 +1,22 @@
+START
+
+10 array xp 10 array yp 25 constant rpi
+1.0 xp ! 12.0 xp 1+ ! 0.0 xp 2+ !
+10.0 xp 3 + ! 1.0 xp 4 + ! 1.0 yp ! 9.0 yp 1+ !
+0.0 yp 2+ ! 10.0 yp 3 + ! 1.0 yp 4 + !
+: pos@ @ ; : len@ 1+ @ ; : min@ 2+ @ ; : max@ 3 + @ ;
+: stp@ 4 + @ ; : wrk@ 5 + + @ ; : wrk! 5 + + ! ;
+: in2ras rpi * fix ;
+: sget dup 2+ @ @ ;
+: u2in swap over min@ - over max@ 2 sget min@ - / over len@ * swap pos@ + ;
+: xu2in xp u2in ; : yu2in yp u2in ;
+: xu2ras xu2in in2ras ; : yu2ras yu2in in2ras ;
+
+(.") '/Users/woo/tmp/tmp_plt.txt' using 1:2 with lines" plt_str !
+
+0 str out_file
+
+(.") /Users/woo/tmp/tmp_plt.txt" out_file !
+
+". Finished Loading DISSPLA"
+;S

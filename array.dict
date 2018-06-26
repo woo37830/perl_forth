@@ -1,0 +1,6 @@
+START
+
+ : prt-array dup @ 1 DO dup I + ? LOOP drop cr ;
+
+". Finished loading array functions"
+;S

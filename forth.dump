@@ -1,0 +1,327 @@
+Outer Interpreter Starting
+> prt_dict
+
+Return Stack1)100
+0)118
+
+Dict Stack
+319) goto _k
+318) 314
+317) k
+316) goto _j
+315) 311
+314) j
+313) goto _i
+312) 308
+311) i
+310) goto _ploop
+309) 305
+308) +loop
+307) goto _loop
+306) 302
+305) loop
+304) goto _do
+303) 299
+302) do
+301) goto _leave
+300) 296
+299) leave
+298) goto _end
+297) 293
+296) end
+295) goto _begin
+294) 290
+293) begin
+292) goto _while
+291) 287
+290) while
+289) goto _then
+288) 284
+287) then
+286) goto _else
+285) 281
+284) else
+283) goto _if
+282) 275
+281) if
+280) goto does
+279) 254
+278) does>
+277) goto builds
+276) 272
+275) <builds
+274) goto question
+273) 267
+272) question
+271) 42
+270) 262
+269) &colon
+268) 260
+267) ENTRY
+266) 42
+265) 133
+264) 133
+263) 3
+262) &colon
+261) 257
+260) LATEST
+259) goto qsearch
+258) 242
+257) ?search
+256) goto compile
+255) 251
+254) compile
+253) goto _tick
+252) 248
+251) '
+250) goto rbracket
+249) 245
+248) ]
+247) goto lbracket
+246) 236
+245) [
+244) goto semi_s
+243) 239
+242) ;S
+241) goto load
+240) 233
+239) load
+238) goto _token
+237) 52
+236) token
+235) goto branch
+234) 230
+233) BRANCH
+232) goto zbranch
+231) 227
+230) 0BRANCH
+229) goto _gt
+228) 224
+227) >
+226) goto dp_store
+225) 221
+224) DP!
+223) goto equal
+222) 218
+221) =
+220) goto zequal
+219) 215
+218) 0=
+217) goto _error
+216) 212
+215) ?error
+214) goto _pairs
+213) 209
+212) ?pairs
+211) goto _comp
+210) 206
+209) ?comp
+208) goto _find
+207) 203
+206) -find
+205) goto swap
+204) 200
+203) swap
+202) goto rot
+201) 197
+200) rot
+199) goto over
+198) 194
+197) over
+196) goto R
+195) 191
+194) R
+193) goto Rpop
+192) 188
+191) R>
+190) goto pushR
+189) 185
+188) >R
+187) goto _deposit
+186) 182
+185) ,
+184) goto minus
+183) 179
+182) minus
+181) goto allot
+180) 176
+179) allot
+178) goto here
+177) 173
+176) HERE
+175) goto create
+174) 170
+173) create
+172) goto _semi
+171) 167
+170) ;
+169) goto _colon
+168) 163
+167) :
+166)  
+165) goto var
+164) 159
+163) delim
+162) 0
+161) goto var
+160) 155
+159) LOADING
+158) 10
+157) goto var
+156) 151
+155) BASE
+154) 1
+153) goto var
+152) 147
+151) START
+150) 0
+149) goto var
+148) 143
+147) STATE
+146) 0
+145) goto var
+144) 140
+143) MODE
+142) goto array
+141) 137
+140) array
+139) goto plus_store
+138) 134
+137) +!
+136) goto store
+135) 131
+134) !
+133) goto at
+132) 128
+131) @
+130) goto variable
+129) 125
+128) variable
+127) goto constant
+126) 122
+125) constant
+124) goto literal
+123) 119
+122) literal
+121) goto abort
+120) 116
+119) abort
+118) goto outer
+117) 113
+116) outer
+115) goto _exec
+114) 110
+113) exec
+112) goto type
+111) 107
+110) type
+109) goto n_prt
+108) 104
+107) n_prt
+106) goto trace_fcn
+105) 101
+104) trace_fcn
+103) goto trace_dict
+102) 98
+101) trace_dict
+100) goto prt_dict
+99) 95
+98) prt_dict
+97) goto names
+96) 92
+95) names
+94) goto hello
+93) 89
+92) hello
+91) goto bits
+90) 86
+89) bits
+88) goto nl
+87) 83
+86) cr
+85) goto dot
+84) 80
+83) .
+82) goto _values
+81) 77
+80) values
+79) goto div
+78) 74
+77) /
+76) goto mult
+75) 71
+74) *
+73) goto add
+72) 64
+71) +
+70) 42
+69) 63
+68) 63
+67) 57
+66) &colon
+65) 61
+64) dup
+63) goto _push
+62) 58
+61) push
+60) goto drop2
+59) 55
+58) drop2
+57) goto drop
+56) 49
+55) drop
+54) goto semicode
+53) 40
+52) ;code
+51) goto search
+50) 46
+49) search
+48) goto quit
+47) 43
+46) quit
+45) 115
+44) 37
+43) execute
+42) goto semi
+41) 0
+40) semi
+39) &colon
+38) 33
+37) colon
+36) 0
+35) goto var
+34) 29
+33) COMPILER
+32) 0
+31) goto var
+30) 25
+29) COMPILER
+28) 278
+27) goto var
+26) 21
+25) IMMED
+24) 12
+23) goto var
+22) 13
+21) CONTEXT
+20)  
+19) goto constant
+18) 13
+17) ASPACE
+16) 319
+15) goto var
+14) 9
+13) LAST
+12) 317
+11) goto var
+10) 5
+9) CORE
+8) 320
+7) goto var
+6) 1
+5) DP
+4) 12
+3) goto var
+2) 0
+1) CURRENT
+0) 0
