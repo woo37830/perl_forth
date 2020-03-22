@@ -1,5 +1,6 @@
 #!/usr/bin/perl
-  use lib '/Users/woo/Development/Forth/Perl/PDL-2.3.11';
+  use lib '/Users/woo/Development/Forth/Perl/PDL-2.4.11/blib/lib';
+  use lib '/Users/woo/Development/Forth/Perl/PDL-2.4.11/blib/lib/PDL';
   use PDL;
   use PDL::Graphics::LUT;
   use PDL::Graphics::AquaTerm;
