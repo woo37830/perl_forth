@@ -2,8 +2,8 @@
 #
 # forth		J. W. Wooten	01/18/96
 #	$Source: /Users/woo/cvsrep/perl-forth/forth.pl,v $
-#	$Revision: 1.13 $
-#	$Author: woo $			$Date: 2015/02/07 20:14:37 $
+#	$Revision: 1.14 $
+#	$Author: woo $			$Date: 2022/08/19 20:14:37 $
 #	$Locker:  $
 #
 # Copyright (C) J. W. Wooten and Oak Ridge National Laboratory 1996
@@ -15,6 +15,9 @@
 # maintained.
 #
 #	$Log: forth.pl,v $
+#	Revision 1.14  2022/08/19 12:18:00  woo
+#   Updated author and added to log
+
 #	Revision 1.13  2015/02/07 20:14:37  woo
 #	updates to vector functions
 #
@@ -85,8 +88,8 @@
 #
 #
 
-$VERSION = '$Revision: 1.13 $';
-$DATE = '$Date: 2015/02/07 20:14:37 $';
+$VERSION = '$Revision: 1.14 $';
+$DATE = '$Date: 2022/08/19 12:18:00 $';
 $LAST_AUTHOR = '$Author: woo $';
 $DICT="forth.dict";
 #
@@ -383,8 +386,9 @@ init:			# init the system (maybe load forth.dict?)
 hello:			# print hello message at startup
 	print "FORTH in PERL!\n";
 	print "\tVersion: $VERSION";
-	print "\n\tAuthor: woo\@shoulderscorp.com";
+	print "\n\tAuthor: jwooten37830\@icloud.com";
 	print "\n\tLast Updated by: $LAST_AUTHOR on $DATE";
+	print "\n";
 	print "\n\tnames will list words in dictionary.";
 	print "\n\tload $DICT for more functions";
 	print "\n\tor, oddball.dict for oddball";
