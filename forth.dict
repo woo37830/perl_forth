@@ -1,5 +1,5 @@
 
-: ( RT_PAREN token drop2 ; 
+: ( RT_PAREN token drop2 ;
 : (.") QUOTE token drop ;
 : 1+  1  + ;
 : 2+ 2 + ;
@@ -38,10 +38,13 @@
 : spaces 0 max -dup IF 1 DO space LOOP ENDIF ;
 : DUMP DP @ dup LAST @ - 1+ n_prt cr ." LAST =" LAST ? ." DP = " DP ? ." CURRENT = " CURRENT @ ? ." CONTEXT = " CONTEXT @ ? cr ;
 : str <builds , does> ;
+: vocabulary <builds [compile] immediate ENTRY LAST @ 3 + ! LAST @ 3 + CURRENT ! does> CONTEXT ! ;
+: FORGET CURRENT @ CONTEXT ! word ?search IF dup 1+ @ CURRENT @ ! DP ! ELSE question THEN ;
 : REMEMBER 0 variable ;
 : bye quit ;
 : ". (.") type cr ;
+: see [compile] ' trace_fcn ;
 
-". Finished Loading Basic Functions"
+". Finished Loading Basic Forth Functions"
 
 ;S

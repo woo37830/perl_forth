@@ -1,5 +1,5 @@
 
-load forth.dict
+( load forth.dict )
 REMEMBER core
 load math.dict
 REMEMBER math

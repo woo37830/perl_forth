@@ -38,5 +38,5 @@
 : space ASPACE type ;
 : spaces 0 max -dup IF 1 DO space LOOP ENDIF ;
 : ". (.") drop type cr ;
-". Finished Loading Basic Functions"
+". Finished Loading Base Functions"
 ;S

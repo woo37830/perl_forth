@@ -88,7 +88,7 @@
 $VERSION = '$Revision: 1.13 $';
 $DATE = '$Date: 2015/02/07 20:14:37 $';
 $LAST_AUTHOR = '$Author: woo $';
-$DICT="forth.dict";
+$DICT="oddball.dict";
 #
 $err_msg[1] = "Compilation only, use in definition\n";
 $err_msg[2] = "Execution only\n";
@@ -386,9 +386,11 @@ hello:			# print hello message at startup
 	print "\n\tAuthor: woo\@shoulderscorp.com";
 	print "\n\tLast Updated by: $LAST_AUTHOR on $DATE";
 	print "\n\tnames will list words in dictionary.";
+	print "\n\tforth.dict is loaded automatically.";
 	print "\n\tload $DICT for more functions";
-	print "\n\tor, oddball.dict for oddball";
 	print "\n";
+  $_file = "forth.dict";
+	goto loadr;
 #	goto _next;
 	goto abort;
 
@@ -1087,6 +1089,7 @@ semi_s:			# terminate load
 
 load:			# load file_name start_word -> loads until ;S
 	$_file = &token(' ');
+	loadr:     # expect $_file to be defined
 	if( defined $file && $_file ne $file )	{
 		$byte_ptr = tell INPUT;
 		push(@ptrs, $byte_ptr);
